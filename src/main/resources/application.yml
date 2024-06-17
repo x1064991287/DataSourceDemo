@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:mysql://172.18.163.23:3306/saas0129?useSSL=true&serverTimezone=GMT&prepStmtCacheSize=517&cachePrepStmts=true&autoReconnect=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: root
+    password: Bstdb@2021#
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 60000
+      max-lifetime: 1800000
+      maximum-pool-size: 10
+      minimum-idle: 10
+      connection-test-query: select 1
+#    url: jdbc:oracle:thin:@172.18.166.156:1521/orcl
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    username: SAAS0104
+#    password: Bstdb@2021#
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
