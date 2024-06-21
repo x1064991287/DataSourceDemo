@@ -15,6 +15,20 @@ spring:
 #    driver-class-name: oracle.jdbc.OracleDriver
 #    username: SAAS0104
 #    password: Bstdb@2021#
+
+
+#  DM
+  #url: jdbc:dm://172.18.163.89:5236
+  #username: CZYH_SAAS0912
+  #password: Bstdb@2023#
+  #driver-class-name: dm.jdbc.driver.DmDriver
+
+#ClickHouse:
+#  url: jdbc:clickhouse://172.18.166.65:8123/saas0923?socket_timeout=300000
+#  username: saas0923
+#  password: Bstdb2021
+
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
