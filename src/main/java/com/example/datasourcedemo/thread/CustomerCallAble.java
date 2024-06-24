@@ -2,6 +2,9 @@ package com.example.datasourcedemo.thread;
 
 import java.util.SortedMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * 自定义CallAble线程
@@ -16,9 +19,10 @@ public class CustomerCallAble implements Callable<String> {
         return "callAble thread";
     }
     public static void main(String[] args) throws Exception {
-        CustomerCallAble customerCallAble = new CustomerCallAble();
-        String call = customerCallAble.call();
-        System.out.println(call);
-        System.out.println("主线程执行");
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<String> future = executor.submit(new CustomerCallAble());
+        System.out.println(future.get());
+        executor.shutdown();
+        System.out.println("main thread");
     }
 }
