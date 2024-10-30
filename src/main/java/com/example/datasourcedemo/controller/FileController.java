@@ -1,11 +1,15 @@
 package com.example.datasourcedemo.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 文件上传、下载的接口
@@ -34,8 +38,18 @@ public class FileController {
     //responseEntity.getBody().writeTo(response.getOutputStream());
     @GetMapping("/download2")
     public ResponseEntity<byte[]> downloadFiles2(HttpServletResponse response) throws IOException {
+        // 设置你想要的文件名
+        String filename = "test.txt";
+        String fileContent = "test";
+        byte[] fileBytes = fileContent.getBytes(StandardCharsets.UTF_8);
 
-        return ResponseEntity.ok().body("test".getBytes());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", URLEncoder.encode(filename, StandardCharsets.UTF_8.toString()));
+
+        return ResponseEntity.ok()
+                             .headers(headers)
+                             .body(fileBytes);
     }
 
     /**
