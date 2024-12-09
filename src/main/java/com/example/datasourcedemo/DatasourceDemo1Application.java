@@ -12,6 +12,7 @@ public class DatasourceDemo1Application {
 
     public static void main(String[] args) {
         SpringApplication.run(DatasourceDemo1Application.class, args);
+        System.out.println("启动成功");
     }
 
 }
