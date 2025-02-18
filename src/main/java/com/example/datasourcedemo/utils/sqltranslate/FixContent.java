@@ -131,7 +131,7 @@ public class FixContent {
                         while (!allLines1.get(k).startsWith(start)) {
                             if (!allLines1.get(k).startsWith("--")) {
                                 String s = allLines1.get(k);
-                                if (s.endsWith(";")) {
+                                if (s.endsWith(";")&& !s.contains("ADD PRIMARY KEY")) {
                                     s = s.substring(0, s.length() - 1);
                                     s += " tablespace TAX_BASIC_INDEX_TBS;";
                                     sb1.append(s);
