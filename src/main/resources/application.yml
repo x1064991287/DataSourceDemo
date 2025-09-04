@@ -1,34 +1,269 @@
+server:
+  port: 8081
+  application: bs-cipher-database-cloud
 spring:
+  main:
+    scan-base-package: com.bosssoft.arch
   datasource:
-    url: jdbc:mysql://172.18.163.23:3306/saas0129?useSSL=true&serverTimezone=GMT&prepStmtCacheSize=517&cachePrepStmts=true&autoReconnect=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
-    username: root
+    #    druid:
+    #      initial-size: 1
+    #      max-active: 5
+    #      max-wait: 3000
+    #    url: jdbc:mysql://172.18.150.64:3306/testdb?useSSL=true&serverTimezone=GMT&prepStmtCacheSize=517&cachePrepStmts=true&autoReconnect=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    #    username: root
+    #    password: Ztanker.98
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    url: jdbc:oracle:thin:@172.18.166.156:1521/orcl
+    #        driver-class-name: oracle.jdbc.OracleDriver
+    #    username: SAAS0104
+    #    password: Bstdb@2021#
+    #    sql-script-encoding: UTF-8
+    #    url: jdbc:dm://172.18.163.89:5236
+    #    driver-class-name: dm.jdbc.driver.DmDriver
+    #    username: CZYH_SAAS0912
+    #    password: Bstdb@2023#
+
+    #    dynamic:
+    #      primary: master
+    #      datasource:
+    #        master:
+    #          url: jdbc:mysql://172.18.163.23:3306/saas0129?useSSL=true&serverTimezone=GMT&prepStmtCacheSize=517&cachePrepStmts=true&autoReconnect=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    #          username: root
+    #          password: Bstdb@2021#
+    #          driver-class-name: com.mysql.cj.jdbc.Driver
+    #        slave:
+    url: jdbc:oracle:thin:@172.18.166.156:1521/orcl
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: SAAS0104
     password: Bstdb@2021#
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      connection-timeout: 30000
-      idle-timeout: 60000
-      max-lifetime: 1800000
-      maximum-pool-size: 10
-      minimum-idle: 10
-      connection-test-query: select 1
-#    url: jdbc:oracle:thin:@172.18.166.156:1521/orcl
-#    driver-class-name: oracle.jdbc.OracleDriver
-#    username: SAAS0104
-#    password: Bstdb@2021#
 
 
-#  DM
-  #url: jdbc:dm://172.18.163.89:5236
-  #username: CZYH_SAAS0912
-  #password: Bstdb@2023#
-  #driver-class-name: dm.jdbc.driver.DmDriver
+#    url: jdbc:dm://172.18.163.89:5236
+#    username: CZYH_SAAS0912
+#    password: Bstdb@2023#
+#    driver-class-name: dm.jdbc.driver.DmDriver
 
-#ClickHouse:
-#  url: jdbc:clickhouse://172.18.166.65:8123/saas0923?socket_timeout=300000
-#  username: saas0923
-#  password: Bstdb2021
+
 
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+#logging:
+#  level:
+#    com.bosssoft.arch.data.integrity.sdk: DEBUG
+bs:
+  multi-line-data-integrity:
+    #是否开启多行数据完整性校验
+    enable: 1
+    #本地策略
+    localTableStrategy:
+      #表名
+      - name: itg_test_sdk_entity1
+        #摘要算法 SM3、MD5、Third(需要自己实现 IBdiEncryptAlgorithm 接口)
+        digestAlgorithm: SM3
+        # 标识机构或组织的唯一标识符
+        keys:
+          - dict_version
+          - dict_code
+          - agency_id
+        #该表的所有主键   用于数据恢复时候锁定行
+        primaryKeys:
+          - id
+          - fid
+        # 数据恢复加密算法自定义私有密钥,不填或缺省时使用默认密钥
+        encryptKey:
+        #数据恢复加密算法 SM2、
+        integrityEncryptAlgorithm: SM2
+        # 参与摘要计算的列
+        columns:
+          - f_string
+          - f_long
+          - f_int
+          - f_byte
+          - f_short
+  #      - name: itg_user
+  #        digestAlgorithm: SM3
+  #        keys: # 唯一标识符，允许有多个字段（类似于复合主键）
+  #          - user_age
+  #          - user_phone
+  #        columns: # 参与摘要计算的列
+  #          - rec_version
+  #          - rec_id
+  #
+  #      - name: afa_auth_party
+  #        digestAlgorithm: SM3
+  #        keys: # 唯一标识符，允许有多个字段（类似于复合主键）
+  #          - role_code
+  #          - role_type
+  #          - party_code
+  #          - party_type
+  #        columns: # 参与摘要计算的列
+  #          - tenant_id
+  #          - fromoldcode1
+
+
+  cipher:
+    enableRemote: 3
+    #密码机加密对应的appId，有密码机加密场景填写
+    appId: APP_BEBEF6B84FB148AF918643775224D137
+    #机器id，有密码机加密场景填写
+    deviceId: DEV_EFAF1A5060D346AAAF9A48069C4918D9
+    #版本号，有密码机加密场景填写
+    version: 1.0
+    #算法，有密码机加密场景填写
+    signAlgo: HmacSHA256
+    #密码机地址，有密码机加密场景填写
+    cipherMachineUrl: http://172.18.150.59:48553
+    #加密表策略，外部化配置模式填写
+    localTableStrategy:
+      # 表名
+      - name: t_user
+        #列加密策略
+        columnStrategyMap:
+          #列名
+          password:
+            #秘钥
+            encryptionKey: 2197499d3a989c6aea1bc606883962cc
+            #算法
+            encryptionAlgorithm: AES_CBC
+            #启用加密
+            encryptionEnabled: 1
+            #是否支持模糊查询
+            vagueSearch: true
+            #加密字段完整名称
+            name: password
+          username:
+            encryptionKey: 2197499d3a989c6aea1bc606883962cc
+            encryptionAlgorithm: SM4_CBC
+            encryptionEnabled: 1
+            vagueSearch: true
+            name: username
+
+
+  data-integrity:
+    #数据源名称 多数据源模式时填写，单数据源模式时可缺省
+    sourceName: dataSource
+    #开启本地配置或远程配置 1:远程模式，需要搭建安全控制中心 2:本地数据库模式 3: 外部化配置模式 其他：读取指定位置文件
+    mode: 3
+    #应用名称，远程模式填写（安全控制中心获取）
+    appName: testApp
+    #通信码，远程模式填写（安全控制中心获取）
+    commKey: mktjIUk6X2GsC9JRjBVR6GopqkmP4KDBkKjHDr4Z9O9sQYjB
+    #安全控制中心地址，远程模式填写
+    url: http://172.18.150.59:8084
+    #根秘钥，本地数据库模式填写
+    rootKey: iz8krh4zYNYi/PTVVQMj9tTgaxAXmpfxggtdrWSiozsAAQABMjAyNDA3MTExMDMzMjXoyF+0vBMNTc6dQWr0ZlsqfzNYTaUks2pnmDZ43DkZ9wAg4Ak4qCA3CHulOGpp5CeWoFcv07hdCCBZGSva0CO1DM10ZXN0LWFwcDE=
+    localTableStrategy:
+      #完整性定义表名称
+      - name: AFA_AUTH_PARTY
+        #主键
+        primaryKey:
+          - role_code
+          - role_type
+          - party_code
+          - party_type
+        #版本 本地模式默认为-1
+        version: -1
+        #是否有分表
+        multipleTable: 0
+        #分表前缀
+        multipleTablePrefix:
+        # 自定义摘要表名称  不填或者缺省该字段默认为itg_test_partition_digest
+        digestTableName: data_integrity_digest
+        #完整性摘要算法  目前支持SM3、MD5、Third(第三方密码机，需要自己实现 IBdiEncryptAlgorithm 接口)
+        digestAlgorithm: MD5
+        #数据恢复使用的加密算法  目前支持 SM2、Third(第三方密码机，需要自己实现 IBdiEncryptAlgorithm 接口)
+        integrityEncryptAlgorithm: SM2
+        #自定义SM2私有密钥  不填或者缺省该字段则使用默认值
+        sm2SecrectKey: 3845208f7babc4b2e0f6b6d9a4bfc3bbee3d5c3d4b4a5415d9c97c9f2d4e3c2e
+        #完整性列名集合
+        columns:
+          - tenant_id
+          - fromoldcode1
+        is_multi_key: 0
+        #完整性定义表名称
+        keys:
+          - party_code
+          - party_type
+
+
+      - name: AFA_USER
+        #主键
+        primaryKey:
+          - USER_ID
+        #版本 本地模式默认为-1
+        version: -1
+        #是否有分表
+        multipleTable: 0
+        #分表前缀
+        multipleTablePrefix:
+        # 自定义摘要表名称  不填或者缺省该字段默认为itg_test_partition_digest
+        digestTableName: DATA_INTEGRITY_DIGEST
+        #自定义SM2私有密钥  不填或者缺省该字段则使用默认值
+        sm2SecrectKey: 3845208f7babc4b2e0f6b6d9a4bfc3bbee3d5c3d4b4a5415d9c97c9f2d4e3c2e
+        #完整性摘要算法
+        digestAlgorithm: SM3
+        integrityEncryptAlgorithm: SM2
+        #完整性列名集合
+        columns:
+          - USER_NAME
+          - PASSWORD
+
+      - name: "student"
+        #主键
+        primaryKey:
+          - "id"
+          - "fid"
+        #版本 本地模式默认为-1
+        version: -1
+        #是否有分表
+        multipleTable: 1
+        #分表前缀
+        multipleTablePrefix: "itg_test_partition"
+        # 自定义摘要表名称  不填或者缺省该字段默认为itg_test_partition_digest
+        digestTableName: "data_integrity_digest"
+        #完整性摘要算法  目前支持SM3、MD5、Third(第三方密码机，需要自己实现 IBdiEncryptAlgorithm 接口)
+        digestAlgorithm: "MD5"
+        #数据恢复使用的加密算法  目前支持 SM2、Third(第三方密码机，需要自己实现 IBdiEncryptAlgorithm 接口)
+        integrityEncryptAlgorithm: "SM2"
+        #自定义SM2私有密钥  不填或者缺省该字段则使用默认值
+        sm2SecrectKey: "3845208f7babc4b2e0f6b6d9a4bfc3bbee3d5c3d4b4a5415d9c97c9f2d4e3c2e"
+        #完整性列名集合
+        columns:
+          - "password"
+          - "sex"
+        is_multi_key: 0
+        #分组条件
+        keys:
+          - sex
+          - class_id
+        #是否严格验证 默认为false，当为true时，如果没有查询到摘要也会报错
+        strictVerify: true
+
+      - name: T_USER
+        #主键
+        primaryKey: ID
+        #版本 本地模式默认为-1
+        version: -1
+        #是否有分表
+        multipleTable: 0
+        #分表前缀
+        multipleTablePrefix:
+
+        # 自定义摘要表名称  不填或者缺省该字段默认为itg_test_partition_digest
+        digestTableName: "data_integrity_digest"
+        #完整性摘要算法  目前支持SM3、MD5、Third(第三方密码机，需要自己实现 IBdiEncryptAlgorithm 接口)
+        digestAlgorithm: "MD5"
+        #数据恢复使用的加密算法  目前支持 SM2、Third(第三方密码机，需要自己实现 IBdiEncryptAlgorithm 接口)
+        integrityEncryptAlgorithm: "SM2"
+        #自定义SM2私有密钥  不填或者缺省该字段则使用默认值
+        sm2SecrectKey: "3845208f7babc4b2e0f6b6d9a4bfc3bbee3d5c3d4b4a5415d9c97c9f2d4e3c2e"
+        #完整性列名集合
+        columns:
+          - "password"
+          - "sex"
+          - "age"
+
